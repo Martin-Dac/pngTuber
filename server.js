@@ -26,7 +26,7 @@ const wss = new WebSocket.Server({ port: 8080 }); // Servidor para el widget
     });
 
     // Suscribirse a los eventos
-    await obs.send('StartListeningToInputs'); // Este método activa InputVolumeMeters
+    await obs.call('StartListeningToInputs'); // Este método activa InputVolumeMeters
   } catch (err) {
     console.error(err);
   }
