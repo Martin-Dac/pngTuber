@@ -13,9 +13,6 @@ const wss = new WebSocket.Server({ port: 8080 }); // Servidor para el widget
     await obs.connect(`ws://${ip}:${port}`, password); // URL y contraseña
     console.log("Conectado a OBS");
 
-    // Subscribirnos a eventos de nivel de audio
-    await obs.call('Subscribe', { eventSubscriptions: (1 << 9) }); // InputVolumeMeters
-
     obs.on('InputVolumeMeters', data => {
       const mic = data.inputs.find(i => i.inputName === "Mic/Aux");
       if (mic) {
