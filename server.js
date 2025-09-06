@@ -1,6 +1,6 @@
-require('dotenv').config();
-const OBSWebSocket = require('obs-websocket-js').default;
-const WebSocket = require('ws');
+import OBSWebSocket, {EventSubscription} from 'obs-websocket-js';
+import WebSocket from 'ws';
+import 'dotenv/config';
 
 const obs = new OBSWebSocket();
 const wss = new WebSocket.Server({ port: 8080 }); // Servidor para el widget
@@ -10,7 +10,10 @@ const wss = new WebSocket.Server({ port: 8080 }); // Servidor para el widget
     port = process.env.PORT || 4455;
     password = process.env.PASSWORD || '1234';
     ip = process.env.IP || 'localhost';
-    await obs.connect(`ws://${ip}:${port}`, password); // URL y contraseña
+    await obs.connect(`ws://${ip}:${port}`, password, {
+        eventSubscriptions: EventSubscription.InputVolumeMeters,
+        rpcVersion: 1
+    }); // URL y contraseña
     console.log("Conectado a OBS");
 
     obs.on('InputVolumeMeters', data => {
