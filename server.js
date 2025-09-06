@@ -7,13 +7,19 @@ const wss = new WebSocket.Server({ port: 8080 }); // Servidor para el widget
 
 const idleImg = process.env.IDLE_IMG; // boca cerrada
 const talkingImg = process.env.TALKING_IMG; // boca abierta
+const port = process.env.PORT || 4455;
+const password = process.env.PASSWORD || "1234";
+const ip = process.env.IP || "localhost";
+const HOLD_TIME = 1000;
+const TALKING_THRESHOLD = 0.02; // Ajusta este valor según sea necesario
+const SILENCE_THRESHOLD = 0.01; // Ajusta este valor según sea necesario
+
+let holdUntil = 0;
+let isTalking = false;
+let imgName;
 
 (async () => {
   try {
-    const port = process.env.PORT || 4455;
-    const password = process.env.PASSWORD || "1234";
-    const ip = process.env.IP || "localhost";
-
     await obs.connect(`ws://${ip}:${port}`, password, {
       eventSubscriptions: EventSubscription.InputVolumeMeters,
       rpcVersion: 1,
@@ -25,13 +31,26 @@ const talkingImg = process.env.TALKING_IMG; // boca abierta
 
       if (mic) {
         const flat = mic.inputLevelsMul.flat();
-        let imgName;
         const volume = Math.max(...flat);
 
-        if (volume > 0.02) {
-          imgName = talkingImg;
+        const now = Date.now();
+
+        if (isTalking) {
+          if (now > holdUntil) {
+            if (volume < SILENCE_THRESHOLD) {
+              // Si deja de hablar, cambio inmediato
+              console.log(now, holdUntil);
+              imgName = idleImg;
+              isTalking = false;
+            }
+          }
         } else {
-          imgName = idleImg;
+          if (volume > TALKING_THRESHOLD) {
+            console.log(now, holdUntil);
+            imgName = talkingImg;
+            isTalking = true;
+            holdUntil = now + HOLD_TIME;
+          }
         }
 
         wss.clients.forEach((client) => {

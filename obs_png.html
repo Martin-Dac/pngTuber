@@ -1,25 +1,63 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>PNGTuber Widget</title>
   <style>
     body {
       margin: 0;
-      background: transparent; /* fondo transparente para OBS */
+      background: transparent;
+      /* fondo transparente para OBS */
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
+
     img {
       max-height: 100%;
       max-width: 100%;
     }
   </style>
 </head>
+
 <body>
-  <img id="avatar" src="normal.png" alt="avatar">
-  <script src="obs_png.js"></script>
+  <img id="avatar" src="" alt="avatar">
+  <script >
+    const avatar = document.getElementById("avatar");
+
+    let ws;
+    let reconnectInterval = 10000; // ms
+    function connectWebSocket() {
+      ws = new WebSocket("ws://localhost:8080");
+      console.log("Intentando conectar WebSocket...");
+
+      ws.onopen = () => {
+        console.log("WebSocket conectado");
+      };
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.image) {
+          avatar.src = data.image;
+        }
+      };
+
+      ws.onclose = () => {
+        console.log("WebSocket desconectado, reintentando en " + reconnectInterval + "ms");
+        setTimeout(connectWebSocket, reconnectInterval);
+      };
+
+      ws.onerror = (err) => {
+        console.log("WebSocket error", err);
+        ws.close(); // Forzar reconexión
+      };
+    }
+
+    connectWebSocket();
+
+  </script>
 </body>
+
 </html>
