@@ -28,11 +28,7 @@ const talkingImg = process.env.TALKING_IMG; // boca abierta
         let imgName;
         const volume = Math.max(...flat);
 
-        console.log("Volumen detectado:", flat, "Max:", volume);
-
         if (volume > 0.02) {
-          // Ajusta el umbral según tu micrófono
-          console.log("Hablando", volume);
           imgName = talkingImg;
         } else {
           imgName = idleImg;
