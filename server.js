@@ -37,12 +37,14 @@ const talkingImg = process.env.TALKING_IMG; // boca abierta
 
         wss.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
+            console.log("Enviando imagen a cliente:", imgName);
             client.send(JSON.stringify({ image: imgName }));
           }
         });
       }
     });
   } catch (err) {
+    console.log("Error de conexión a OBS:");
     console.error(err);
   }
 })();
