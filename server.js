@@ -24,11 +24,11 @@ const talkingImg = process.env.TALKING_IMG; // boca abierta
       const mic = data.inputs.find((i) => i.inputName === "Mic/Aux");
 
       if (mic) {
-        const levels = mic.inputLevelsMul;
+        const flat = mic.inputLevelsMul.flat();
         let imgName;
-        const volume = Math.max(...levels);
+        const volume = Math.max(...flat);
 
-        console.log("Volumen detectado:", levels, "Max:", volume);
+        console.log("Volumen detectado:", flat, "Max:", volume);
 
         if (volume > 0.02) {
           // Ajusta el umbral según tu micrófono
