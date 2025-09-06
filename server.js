@@ -7,9 +7,9 @@ const wss = new WebSocket.Server({ port: 8080 }); // Servidor para el widget
 
 (async () => {
   try {
-    port = process.env.PORT || 4455;
-    password = process.env.PASSWORD || '1234';
-    ip = process.env.IP || 'localhost';
+    const port = process.env.PORT || 4455;
+    const password = process.env.PASSWORD || '1234';
+    const ip = process.env.IP || 'localhost';
     await obs.connect(`ws://${ip}:${port}`, password, {
         eventSubscriptions: EventSubscription.InputVolumeMeters,
         rpcVersion: 1
