@@ -19,8 +19,7 @@ const wss = new WebSocket.Server({ port: 8080 }); // Servidor para el widget
     obs.on('InputVolumeMeters', data => {
       const mic = data.inputs.find(i => i.inputName === "Mic/Aux");
       if (mic) {
-        const volume = mic.inputLevelsMul[0]; // Nivel RMS del canal izquierdo
-        // Mandamos a todos los clientes conectados al servidor WebSocket
+        const volume = mic.inputLevelsMul[0];
         wss.clients.forEach(client => {
           if (client.readyState === WebSocket.OPEN) {
             client.send(JSON.stringify({ volume }));
@@ -28,6 +27,9 @@ const wss = new WebSocket.Server({ port: 8080 }); // Servidor para el widget
         });
       }
     });
+
+    // Suscribirse a los eventos
+    await obs.send('StartListeningToInputs'); // Este método activa InputVolumeMeters
   } catch (err) {
     console.error(err);
   }
