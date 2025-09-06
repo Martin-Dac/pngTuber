@@ -27,6 +27,8 @@ const talkingImg = process.env.TALKING_IMG; // boca abierta
         const volume = mic.inputLevelsMul[0];
         let imgName;
 
+        console.log("Volumen del micrófono:", volume);
+
         if (volume > 0.02) {
           // Ajusta el umbral según tu micrófono
           console.log("Hablando", volume);
@@ -37,7 +39,6 @@ const talkingImg = process.env.TALKING_IMG; // boca abierta
 
         wss.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
-            console.log("Enviando imagen a cliente:", imgName);
             client.send(JSON.stringify({ image: imgName }));
           }
         });
