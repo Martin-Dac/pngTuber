@@ -39,14 +39,12 @@ let imgName;
           if (now > holdUntil) {
             if (volume < SILENCE_THRESHOLD) {
               // Si deja de hablar, cambio inmediato
-              console.log(now, holdUntil);
               imgName = idleImg;
               isTalking = false;
             }
           }
         } else {
           if (volume > TALKING_THRESHOLD) {
-            console.log(now, holdUntil);
             imgName = talkingImg;
             isTalking = true;
             holdUntil = now + HOLD_TIME;
